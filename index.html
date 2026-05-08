@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ANARCX LAB — Vote Before We Drop It</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --cream: #EDE8DC;
+      --black: #0c0c0c;
+      --red:   #e63030;
+      --mono:  'Courier New', Courier, monospace;
+      --grid-line: rgba(0,0,0,0.07);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--black);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── GRID BG ──────────────────── */
+    .grid-bg {
+      background-color: var(--cream);
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 70px 70px;
+    }
+
+    /* ── NAV ──────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 40px;
+      background: var(--cream);
+      border-bottom: 1px solid var(--black);
+    }
+
+    .nav-logo {
+      display: flex; align-items: baseline; gap: 8px;
+      font-family: 'Anton', sans-serif;
+      font-size: 20px; letter-spacing: 2px;
+      color: var(--black); text-decoration: none;
+    }
+    .nav-logo .slash {
+      font-family: var(--mono);
+      font-size: 13px; font-weight: 400;
+      letter-spacing: 3px; opacity: 0.45;
+    }
+
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 11px; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--black);
+      text-decoration: none; transition: opacity .15s;
+    }
+    .nav-links a:hover { opacity: .45; }
+
+    /* ── HERO ─────────────────────── */
+    .hero {
+      padding: 56px 40px 88px;
+      min-height: calc(100vh - 57px);
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+
+    .hero-status {
+      display: flex; align-items: center; gap: 12px;
+      font-family: var(--mono);
+      font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 36px;
+    }
+    .status-dot {
+      width: 9px; height: 9px;
+      background: var(--red); border-radius: 50%;
+      animation: blink 2s ease-in-out infinite;
+    }
+    .status-sep { opacity: .3; font-size: 14px; }
+
+    @keyframes blink {
+      0%,100% { opacity: 1; } 50% { opacity: .25; }
+    }
+
+    .hero-title {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(68px, 10.8vw, 168px);
+      line-height: .93;
+      letter-spacing: -.5px;
+      text-transform: uppercase;
+      color: var(--black);
+      margin-bottom: 44px;
+    }
+    .hero-title .drop-box {
+      background: var(--black); color: var(--cream);
+      padding: 2px 18px 6px;
+      display: inline-block;
+    }
+
+    .hero-desc {
+      max-width: 500px;
+      font-family: var(--mono);
+      font-size: 13.5px; line-height: 1.75;
+      color: var(--black);
+      margin-bottom: 40px;
+    }
+
+    .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+
+    .btn-blk {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--black); color: var(--cream);
+      padding: 13px 22px;
+      font-family: var(--mono);
+      font-size: 11px; letter-spacing: 2.5px; font-weight: 700;
+      text-transform: uppercase;
+      border: none; border-left: 4px solid var(--red);
+      cursor: pointer; text-decoration: none;
+      transition: opacity .15s;
+    }
+    .btn-blk:hover { opacity: .85; }
+
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: transparent; color: var(--black);
+      padding: 13px 22px;
+      font-family: var(--mono);
+      font-size: 11px; letter-spacing: 2.5px; font-weight: 700;
+      text-transform: uppercase;
+      border: 1px solid var(--black);
+      cursor: pointer; text-decoration: none;
+      transition: all .15s;
+    }
+    .btn-outline:hover { background: var(--black); color: var(--cream); }
+
+    /* ── STATS BAR ────────────────── */
+    .stats-bar {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      border-top: 1px solid var(--black);
+      border-bottom: 1px solid var(--black);
+      background: var(--cream);
+    }
+    .stat-cell {
+      padding: 32px 40px;
+      border-right: 1px solid var(--black);
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-lbl {
+      font-family: var(--mono);
+      font-size: 10px; letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(0,0,0,.38); margin-bottom: 10px;
+    }
+    .stat-val {
+      font-family: 'Anton', sans-serif;
+      font-size: 58px; line-height: 1; color: var(--black);
+      transition: all .3s;
+    }
+
+    /* ── MARQUEE ──────────────────── */
+    .marquee-wrap {
+      background: var(--black); overflow: hidden;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--black);
+    }
+    .marquee-track {
+      display: flex; white-space: nowrap;
+      animation: scroll-left 28s linear infinite;
+    }
+    .marquee-item {
+      font-family: var(--mono);
+      font-size: 11px; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--cream);
+      padding-right: 64px; flex-shrink: 0;
+    }
+    @keyframes scroll-left {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ── SECTION BASE ─────────────── */
+    .section { padding: 80px 40px; }
+    .section-lbl {
+      font-family: var(--mono);
+      font-size: 10px; letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(0,0,0,.35); margin-bottom: 14px;
+    }
+    .section-hdr {
+      display: flex; align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 48px; gap: 20px;
+    }
+    .section-h2 {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(38px, 4.8vw, 72px);
+      line-height: 1; color: var(--black);
+    }
+    .section-more {
+      font-family: var(--mono);
+      font-size: 10px; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--black);
+      text-decoration: none;
+      border-bottom: 1px solid var(--black);
+      padding-bottom: 2px; white-space: nowrap;
+      flex-shrink: 0; transition: opacity .15s;
+    }
+    .section-more:hover { opacity: .4; }
+
+    /* ── PROTOCOL ─────────────────── */
+    .protocol-row {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      border: 1px solid var(--black);
+    }
+    .proto-card {
+      padding: 34px 30px;
+      border-right: 1px solid var(--black);
+    }
+    .proto-card:last-child { border-right: none; }
+    .proto-ttl {
+      font-family: 'Anton', sans-serif;
+      font-size: 21px; letter-spacing: .5px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .proto-desc {
+      font-family: var(--mono);
+      font-size: 12.5px; line-height: 1.72;
+      color: rgba(0,0,0,.55);
+    }
+
+    /* ── TOP 3 ────────────────────── */
+    .top3-grid {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      border: 1px solid var(--black);
+    }
+    .t3-card {
+      border-right: 1px solid var(--black);
+      cursor: pointer; overflow: hidden;
+    }
+    .t3-card:last-child { border-right: none; }
+
+    .t3-img {
+      position: relative;
+      aspect-ratio: 3/4; overflow: hidden;
+      background: #e0dbd0;
+    }
+    .t3-img img { width: 100%; height: 100%; object-fit: cover; }
+
+    .t3-rank {
+      position: absolute; top: 14px; left: 14px; z-index: 2;
+      font-family: 'Anton', sans-serif;
+      font-size: 18px; color: var(--cream);
+      background: var(--black);
+      padding: 4px 10px;
+    }
+    .heat-pill {
+      position: absolute; top: 14px; right: 14px; z-index: 2;
+      background: var(--black); color: var(--cream);
+      font-family: var(--mono);
+      font-size: 10px; letter-spacing: 1px;
+      padding: 5px 9px;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .heat-dot { color: var(--red); font-size: 12px; }
+
+    .card-info {
+      padding: 18px 22px 22px;
+      border-top: 1px solid var(--black);
+      background: var(--cream);
+    }
+    .card-meta {
+      display: flex; justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 9.5px; letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(0,0,0,.35); margin-bottom: 7px;
+    }
+    .card-name {
+      font-family: 'Anton', sans-serif;
+      font-size: 26px; color: var(--black);
+      margin-bottom: 6px;
+    }
+    .card-desc {
+      font-family: var(--mono);
+      font-size: 11.5px; line-height: 1.65;
+      color: rgba(0,0,0,.45); margin-bottom: 14px;
+    }
+    .card-counts {
+      display: flex; align-items: center; gap: 0;
+    }
+    .count-unit { display: flex; flex-direction: column; }
+    .count-n {
+      font-family: 'Anton', sans-serif;
+      font-size: 18px; line-height: 1; color: var(--black);
+    }
+    .count-l {
+      font-family: var(--mono);
+      font-size: 9px; letter-spacing: 1.2px;
+      text-transform: uppercase; color: rgba(0,0,0,.35);
+      margin-top: 1px;
+    }
+    .count-sep {
+      font-family: var(--mono);
+      font-size: 16px; color: rgba(0,0,0,.2);
+      padding: 0 14px; margin-bottom: 6px; align-self: center;
+    }
+
+    /* ── DROPS GRID ───────────────── */
+    .drops-grid {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      border: 1px solid var(--black); border-bottom: none;
+    }
+    .drop-card {
+      border-right: 1px solid var(--black);
+      border-bottom: 1px solid var(--black);
+      overflow: hidden;
+    }
+    .drops-grid .drop-card:nth-child(4n) { border-right: none; }
+
+    .drop-img {
+      position: relative;
+      aspect-ratio: 3/4; overflow: hidden;
+      background: #e0dbd0; cursor: pointer;
+    }
+    .drop-img img { width: 100%; height: 100%; object-fit: cover; }
+
+    .drop-card .card-info { padding: 13px 16px 16px; }
+    .drop-card .card-name { font-size: 22px; margin-bottom: 5px; }
+    .drop-card .card-desc { font-size: 11px; margin-bottom: 10px; }
+    .drop-card .count-n  { font-size: 15px; }
+
+    .want-btn {
+      flex: 1; margin-top: 0;
+      padding: 8px 10px;
+      background: transparent; color: var(--black);
+      border: 1px solid rgba(0,0,0,.18);
+      font-family: var(--mono);
+      font-size: 9.5px; letter-spacing: 1.2px;
+      text-transform: uppercase; cursor: pointer;
+      transition: all .15s;
+    }
+    .want-btn:hover { background: var(--black); color: var(--cream); border-color: var(--black); }
+    .want-btn.active { background: var(--red); color: white; border-color: var(--red); }
+
+    /* ── VOTE ROW ─────────────────── */
+    .vote-row {
+      display: flex; align-items: stretch; gap: 6px;
+      margin-top: 10px;
+    }
+    .vote-btn {
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+      padding: 8px 12px;
+      background: transparent; color: var(--black);
+      border: 1px solid rgba(0,0,0,.18);
+      font-family: var(--mono);
+      font-size: 10px; letter-spacing: 1px;
+      cursor: pointer; transition: all .15s;
+      white-space: nowrap;
+    }
+    .vote-btn:hover { border-color: var(--black); }
+    .vote-btn .v-icon { font-size: 13px; line-height: 1; }
+    .vote-btn .v-count { font-size: 11px; }
+
+    /* up active → red fill */
+    .vote-btn.up.active {
+      background: var(--red); color: white; border-color: var(--red);
+    }
+    /* down active → black fill */
+    .vote-btn.down.active {
+      background: var(--black); color: var(--cream); border-color: var(--black);
+    }
+    /* hover states when NOT active */
+    .vote-btn.up:not(.active):hover { border-color: var(--red); color: var(--red); }
+    .vote-btn.down:not(.active):hover { border-color: var(--black); background: rgba(0,0,0,.05); }
+
+    /* ── MODAL ────────────────────── */
+    .overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,.72);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity .2s;
+    }
+    .overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--cream);
+      border: 1px solid var(--black);
+      padding: 48px 44px;
+      max-width: 460px; width: 90%;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute; top: 14px; right: 18px;
+      background: none; border: none;
+      font-family: var(--mono); font-size: 22px;
+      cursor: pointer; color: var(--black);
+      line-height: 1; padding: 4px;
+    }
+    .modal-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 38px; line-height: 1; margin-bottom: 6px;
+    }
+    .modal-sub {
+      font-family: var(--mono);
+      font-size: 11px; letter-spacing: 1.5px;
+      color: rgba(0,0,0,.35); text-transform: uppercase;
+      margin-bottom: 30px;
+    }
+    .modal-input {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--black);
+      padding: 13px 14px; margin-bottom: 10px;
+      font-family: var(--mono); font-size: 13px;
+      color: var(--black); outline: none;
+    }
+    .modal-input::placeholder { color: rgba(0,0,0,.3); }
+    .modal-input:focus { border-color: var(--red); }
+
+    /* ── FOOTER ───────────────────── */
+    footer {
+      background: var(--cream);
+      border-top: 1px solid var(--black);
+      padding: 64px 40px;
+      display: grid; grid-template-columns: 1.3fr 1fr 1fr;
+      gap: 48px;
+    }
+    .ft-logo {
+      font-family: 'Anton', sans-serif;
+      font-size: 42px; letter-spacing: 1px;
+      margin-bottom: 16px; line-height: 1;
+    }
+    .ft-desc {
+      font-family: var(--mono);
+      font-size: 12px; line-height: 1.75;
+      color: rgba(0,0,0,.45);
+    }
+    .ft-col-lbl {
+      font-family: var(--mono);
+      font-size: 9.5px; letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(0,0,0,.32); margin-bottom: 20px;
+    }
+    .ft-links { list-style: none; display: flex; flex-direction: column; gap: 13px; }
+    .ft-links a {
+      font-family: var(--mono); font-size: 13px;
+      color: var(--black); text-decoration: none;
+      transition: opacity .15s;
+    }
+    .ft-links a:hover { opacity: .4; }
+    .ft-notes {
+      font-family: var(--mono); font-size: 12px;
+      line-height: 1.82; color: rgba(0,0,0,.45);
+    }
+
+    /* ── TOAST ────────────────────── */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+      background: var(--black); color: var(--cream);
+      font-family: var(--mono);
+      font-size: 12px; letter-spacing: 1px;
+      padding: 13px 20px;
+      transform: translateY(80px); opacity: 0;
+      transition: all .35s cubic-bezier(.34,1.56,.64,1);
+      pointer-events: none;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ── FLIP CARD ────────────────── */
+    .flip-wrap {
+      width: 100%; height: 100%;
+      position: relative;
+      perspective: 900px;
+    }
+    .flip-inner {
+      width: 100%; height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.52s cubic-bezier(0.4,0,0.2,1);
+    }
+    .flip-wrap:hover .flip-inner,
+    .flip-wrap.flipped .flip-inner {
+      transform: rotateY(180deg);
+    }
+    .flip-face {
+      position: absolute; inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      overflow: hidden;
+    }
+    .flip-face img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .flip-back-face {
+      transform: rotateY(180deg);
+    }
+    /* F / B label */
+    .flip-label {
+      position: absolute; bottom: 10px; left: 10px; z-index: 3;
+      font-family: var(--mono); font-size: 9px; letter-spacing: 2px;
+      background: rgba(0,0,0,.55); color: rgba(255,255,255,.75);
+      padding: 3px 7px; pointer-events: none;
+      transition: opacity .2s;
+    }
+    .flip-hint {
+      position: absolute; bottom: 10px; right: 10px; z-index: 3;
+      font-family: var(--mono); font-size: 8px; letter-spacing: 1.5px;
+      color: rgba(0,0,0,.3); pointer-events: none;
+      transition: opacity .2s;
+    }
+    .flip-wrap:hover .flip-hint { opacity: 0; }
+
+    /* img placeholder */
+    .img-ph {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      background: #d8d3c8; color: rgba(0,0,0,.25);
+      font-family: var(--mono); font-size: 11px; letter-spacing: 1px;
+    }
+
+    /* ── ADMIN ────────────────────── */
+    .admin-screen {
+      position: fixed; inset: 0; z-index: 9000;
+      background: var(--black);
+      display: none; flex-direction: column;
+      overflow: hidden;
+    }
+    .admin-screen.open { display: flex; }
+
+    .admin-lock {
+      flex: 1;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .admin-lock-box {
+      border: 1px solid rgba(255,255,255,.15);
+      padding: 52px 48px;
+      width: 380px;
+      text-align: center;
+    }
+    .admin-lock-logo {
+      font-family: 'Anton', sans-serif;
+      font-size: 28px; letter-spacing: 2px;
+      color: var(--cream); margin-bottom: 6px;
+    }
+    .admin-lock-sub {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: rgba(255,255,255,.28); margin-bottom: 32px;
+    }
+    .admin-pw-input {
+      width: 100%; background: transparent;
+      border: 1px solid rgba(255,255,255,.2);
+      padding: 13px 14px; margin-bottom: 10px;
+      font-family: var(--mono); font-size: 14px;
+      color: var(--cream); outline: none;
+      text-align: center; letter-spacing: 3px;
+    }
+    .admin-pw-input::placeholder { letter-spacing: 1px; color: rgba(255,255,255,.22); }
+    .admin-pw-input:focus { border-color: var(--red); }
+    .admin-pw-err {
+      font-family: var(--mono); font-size: 10px;
+      color: var(--red); letter-spacing: 1px;
+      margin-bottom: 10px; min-height: 16px;
+    }
+    .admin-login-btn {
+      width: 100%; padding: 13px;
+      background: var(--red); color: white;
+      border: none; cursor: pointer;
+      font-family: var(--mono); font-size: 11px;
+      letter-spacing: 2px; text-transform: uppercase;
+    }
+    .admin-login-btn:hover { opacity: .88; }
+
+    /* admin dashboard */
+    .admin-dash {
+      display: none; flex-direction: column; height: 100%;
+      overflow: hidden;
+    }
+    .admin-dash.open { display: flex; }
+
+    .admin-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 32px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+      flex-shrink: 0;
+    }
+    .admin-topbar-logo {
+      font-family: 'Anton', sans-serif; font-size: 18px;
+      letter-spacing: 2px; color: var(--cream);
+    }
+    .admin-topbar-logo span {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 2px; color: rgba(255,255,255,.3);
+      margin-left: 8px;
+    }
+    .admin-close-btn {
+      background: none; border: 1px solid rgba(255,255,255,.18);
+      color: rgba(255,255,255,.5);
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 2px; padding: 7px 14px;
+      cursor: pointer; text-transform: uppercase;
+    }
+    .admin-close-btn:hover { border-color: var(--red); color: var(--red); }
+
+    .admin-body {
+      flex: 1; overflow-y: auto; padding: 32px;
+      display: flex; flex-direction: column; gap: 36px;
+    }
+
+    .admin-kpi-row {
+      display: grid; grid-template-columns: repeat(4,1fr); gap: 1px;
+      border: 1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.1);
+    }
+    .admin-kpi {
+      background: var(--black); padding: 22px 24px;
+    }
+    .admin-kpi-lbl {
+      font-family: var(--mono); font-size: 9px;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: rgba(255,255,255,.3); margin-bottom: 8px;
+    }
+    .admin-kpi-val {
+      font-family: 'Anton', sans-serif; font-size: 42px;
+      line-height: 1; color: var(--cream);
+    }
+    .admin-kpi-val.red { color: var(--red); }
+
+    .admin-section-title {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 2.5px; text-transform: uppercase;
+      color: rgba(255,255,255,.3); margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .admin-table {
+      width: 100%; border-collapse: collapse;
+      font-family: var(--mono); font-size: 12px;
+    }
+    .admin-table th {
+      text-align: left; padding: 10px 14px;
+      font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+      color: rgba(255,255,255,.3);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .admin-table td {
+      padding: 12px 14px;
+      color: rgba(255,255,255,.7);
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    .admin-table tr:hover td { background: rgba(255,255,255,.03); }
+    .admin-table .td-name {
+      color: var(--cream); font-size: 13px;
+    }
+    .admin-table .td-heat {
+      color: var(--red);
+    }
+    .admin-table .td-rank {
+      font-family: 'Anton', sans-serif; font-size: 16px;
+      color: rgba(255,255,255,.2);
+    }
+    .admin-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 9px; letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .admin-badge.hot { background: var(--red); color: white; }
+    .admin-badge.warm { background: rgba(230,48,48,.2); color: var(--red); }
+    .admin-badge.cold { background: rgba(255,255,255,.07); color: rgba(255,255,255,.3); }
+
+    .admin-export-btn {
+      background: transparent; border: 1px solid rgba(255,255,255,.2);
+      color: rgba(255,255,255,.5);
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 1.5px; padding: 8px 18px;
+      cursor: pointer; text-transform: uppercase;
+      margin-bottom: 14px;
+      transition: all .15s;
+    }
+    .admin-export-btn:hover { border-color: var(--cream); color: var(--cream); }
+
+    .admin-empty {
+      font-family: var(--mono); font-size: 12px;
+      color: rgba(255,255,255,.2); padding: 24px 0;
+      text-align: center; letter-spacing: 1px;
+    }
+
+    /* admin trigger (hidden in footer) */
+    .admin-trigger {
+      color: rgba(0,0,0,.12) !important;
+      font-size: 10px !important; letter-spacing: 1px;
+      cursor: pointer;
+      transition: color .2s !important;
+    }
+    .admin-trigger:hover { color: rgba(0,0,0,.4) !important; }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ──────────────────────────── -->
+<nav>
+  <a href="#" class="nav-logo">ANARCX <span class="slash">/ LAB</span></a>
+  <ul class="nav-links">
+    <li><a href="#drops">Drops</a></li>
+    <li><a href="#top3">Heat</a></li>
+    <li><a href="https://anarcx.in" target="_blank">Store ↗</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ─────────────────────────── -->
+<section class="hero grid-bg">
+  <div>
+    <div class="hero-status">
+      <span class="status-dot"></span>
+      BETA // PRE-PRODUCTION
+      <span class="status-sep">•</span>
+      IX.26.ANARCX.LAB
+    </div>
+
+    <h1 class="hero-title">
+      VOTE BEFORE<br>
+      WE&nbsp;<span class="drop-box">DROP</span>&nbsp;IT.
+    </h1>
+
+    <p class="hero-desc">
+      ANARCX LAB is where we test designs before they hit production. You decide what gets printed. Hype it, skip it, or drop your email so you cop first.
+    </p>
+
+    <div class="hero-btns">
+      <a href="#drops" class="btn-blk">→ RATE THE DROPS</a>
+      <a href="#top3" class="btn-outline">HOTTEST DROPS</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS ─────────────────────────── -->
+<div class="stats-bar">
+  <div class="stat-cell">
+    <div class="stat-lbl">Drops Tested</div>
+    <div class="stat-val">7</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-lbl">Total Heat</div>
+    <div class="stat-val" id="sHeat">2</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-lbl">Waiting List</div>
+    <div class="stat-val" id="sWaiting">2</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-lbl">Views</div>
+    <div class="stat-val" id="sViews">4</div>
+  </div>
+</div>
+
+<!-- ── MARQUEE ───────────────────────── -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item">PRE-PRODUCTION LAB ♦ ANARCX.IN ♦ NOT MINIMAL. NOT OVER THE TOP. JUST DIFFERENT. ♦ MADE IN INDIA ♦ FILE #001 ♦ VOTE BEFORE WE DROP IT ♦</span>
+    <span class="marquee-item">PRE-PRODUCTION LAB ♦ ANARCX.IN ♦ NOT MINIMAL. NOT OVER THE TOP. JUST DIFFERENT. ♦ MADE IN INDIA ♦ FILE #001 ♦ VOTE BEFORE WE DROP IT ♦</span>
+    <span class="marquee-item">PRE-PRODUCTION LAB ♦ ANARCX.IN ♦ NOT MINIMAL. NOT OVER THE TOP. JUST DIFFERENT. ♦ MADE IN INDIA ♦ FILE #001 ♦ VOTE BEFORE WE DROP IT ♦</span>
+    <span class="marquee-item">PRE-PRODUCTION LAB ♦ ANARCX.IN ♦ NOT MINIMAL. NOT OVER THE TOP. JUST DIFFERENT. ♦ MADE IN INDIA ♦ FILE #001 ♦ VOTE BEFORE WE DROP IT ♦</span>
+  </div>
+</div>
+
+<!-- ── PROTOCOL ──────────────────────── -->
+<section class="section">
+  <div class="section-lbl">/ PROTOCOL</div>
+  <div class="section-hdr">
+    <h2 class="section-h2">How the lab works</h2>
+  </div>
+  <div class="protocol-row">
+    <div class="proto-card">
+      <div class="proto-ttl">WE DROP CONCEPTS</div>
+      <div class="proto-desc">Prototypes from the studio. Not yet in production. Only in the lab.</div>
+    </div>
+    <div class="proto-card">
+      <div class="proto-ttl">YOU REACT</div>
+      <div class="proto-desc">Upvote with your size, drop your email if you want it. Every click is data.</div>
+    </div>
+    <div class="proto-card">
+      <div class="proto-ttl">WINNERS GET MADE</div>
+      <div class="proto-desc">Top-voted drops enter production. Losers stay in the archive. Simple.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TOP 3 ──────────────────────────── -->
+<section class="section" id="top3" style="padding-top:0">
+  <div class="section-lbl">/ CURRENT CLIMB</div>
+  <div class="section-hdr">
+    <h2 class="section-h2">Top 3 heating</h2>
+    <a href="#drops" class="section-more">SEE FULL RANKING →</a>
+  </div>
+  <div class="top3-grid" id="top3Grid"></div>
+</section>
+
+<!-- ── ALL DROPS ─────────────────────── -->
+<section class="section" id="drops" style="padding-top:0">
+  <div class="section-lbl">/ FRESH EXPERIMENTS</div>
+  <div class="section-hdr">
+    <h2 class="section-h2">All drops</h2>
+    <a href="https://anarcx.in" target="_blank" class="section-more">ALL DROPS →</a>
+  </div>
+  <div class="drops-grid" id="dropsGrid"></div>
+</section>
+
+<!-- ── FOOTER ────────────────────────── -->
+<footer>
+  <div>
+    <div class="ft-logo">ANARCX LAB</div>
+    <div class="ft-desc">Pre-production demand testing. Designs from anarcx.in dropped here first. Vote, signup, get heard.</div>
+  </div>
+  <div>
+    <div class="ft-col-lbl">INDEX</div>
+    <ul class="ft-links">
+      <li><a href="#drops">/drops</a></li>
+      <li><a href="#top3">/leaderboard</a></li>
+      <li><a href="https://anarcx.in" target="_blank">/store ↗</a></li>
+      <li><a href="#" class="admin-trigger" onclick="openAdmin(event)">/admin</a></li>
+    </ul>
+  </div>
+  <div>
+    <div class="ft-col-lbl">LAB NOTES</div>
+    <div class="ft-notes">
+      Made in India.<br>
+      280 GSM cotton looper lycra.<br>
+      5–7 day delivery.<br><br>
+      © ANARCX 2026 — All drops are concepts.
+    </div>
+  </div>
+</footer>
+
+<!-- ── MODAL ─────────────────────────── -->
+<div class="overlay" id="overlay" onclick="maybeClose(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-title">I WANT THIS.</div>
+    <div class="modal-sub" id="modalSub">—</div>
+    <input class="modal-input" id="mEmail" type="email" placeholder="your@email.com">
+    <input class="modal-input" id="mSize" type="text" placeholder="Your size — XS / S / M / L / XL / XXL">
+    <button class="btn-blk" style="width:100%;justify-content:center;margin-top:4px" onclick="submitWant()">→ ADD ME TO THE LIST</button>
+  </div>
+</div>
+
+<!-- ── TOAST ──────────────────────────── -->
+<div class="toast" id="toast"></div>
+
+<!-- ── ADMIN SCREEN ───────────────────── -->
+<div class="admin-screen" id="adminScreen">
+
+  <!-- Lock screen -->
+  <div class="admin-lock" id="adminLock">
+    <div class="admin-lock-box">
+      <div class="admin-lock-logo">ANARCX LAB</div>
+      <div class="admin-lock-sub">/ ADMIN ACCESS</div>
+      <input class="admin-pw-input" id="adminPwInput" type="password" placeholder="Enter password" onkeydown="if(event.key==='Enter')adminLogin()">
+      <div class="admin-pw-err" id="adminPwErr"></div>
+      <button class="admin-login-btn" onclick="adminLogin()">→ UNLOCK</button>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="admin-dash" id="adminDash">
+    <div class="admin-topbar">
+      <div class="admin-topbar-logo">ANARCX LAB <span>/ ADMIN PANEL</span></div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <span id="adminTimeLabel" style="font-family:'Courier New',monospace;font-size:10px;letter-spacing:1px;color:rgba(255,255,255,.2)"></span>
+        <button class="admin-close-btn" onclick="closeAdmin()">× CLOSE</button>
+      </div>
+    </div>
+    <div class="admin-body">
+
+      <!-- KPIs -->
+      <div>
+        <div class="admin-section-title">/ OVERVIEW</div>
+        <div class="admin-kpi-row">
+          <div class="admin-kpi">
+            <div class="admin-kpi-lbl">Total Wants</div>
+            <div class="admin-kpi-val red" id="akWant">0</div>
+          </div>
+          <div class="admin-kpi">
+            <div class="admin-kpi-lbl">Waiting List</div>
+            <div class="admin-kpi-val" id="akQueue">0</div>
+          </div>
+          <div class="admin-kpi">
+            <div class="admin-kpi-lbl">Total Views</div>
+            <div class="admin-kpi-val" id="akViews">0</div>
+          </div>
+          <div class="admin-kpi">
+            <div class="admin-kpi-lbl">Drops Live</div>
+            <div class="admin-kpi-val">7</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Heat table -->
+      <div>
+        <div class="admin-section-title">/ PRODUCT HEAT RANKING</div>
+        <table class="admin-table" id="adminHeatTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>FILE</th>
+              <th>NAME</th>
+              <th>WANT</th>
+              <th>QUEUED</th>
+              <th>VIEWS</th>
+              <th>HEAT°</th>
+              <th>STATUS</th>
+            </tr>
+          </thead>
+          <tbody id="adminHeatBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Email waitlist -->
+      <div>
+        <div class="admin-section-title">/ EMAIL WAITLIST</div>
+        <button class="admin-export-btn" onclick="exportCSV()">↓ EXPORT CSV</button>
+        <div id="adminQueueWrap">
+          <table class="admin-table" id="adminQueueTable">
+            <thead>
+              <tr>
+                <th>TIME</th>
+                <th>EMAIL</th>
+                <th>SIZE</th>
+                <th>PRODUCT</th>
+                <th>HEAT°</th>
+              </tr>
+            </thead>
+            <tbody id="adminQueueBody"></tbody>
+          </table>
+          <div class="admin-empty" id="adminEmpty" style="display:none">No signups yet. Heat is building.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ─── Data ────────────────────────── */
+var PRODUCTS = [
+  {
+    id:'FILE-001', name:'Highest in the Room', color:'Vintage Beige', price:999,
+    imgBack:'https://cdn.shopify.com/s/files/1/0732/4359/0808/files/2RDYBACK.png?v=1771408469',
+    imgFront:'https://cdn.shopify.com/s/files/1/0732/4359/0808/files/remaketravismockup.png?v=1772649472',
+    desc:'Travis-coded. Psychedelic red. For the ones floating above the room.',
+    link:'https://anarcx.in/products/highest-in-the-room-oversized-t-shirt?variant=48205227065496'
+  },
+  {
+    id:'FILE-002', name:'Cold Flame', color:'Washed Black', price:999,
+    imgBack:'https://cdn.shopify.com/s/files/1/0732/4359/0808/files/BACKWATR.png?v=1772546331',
+    imgFront:'https://cdn.shopify.com/s/files/1/0732/4359/0808/files/FRNT.png?v=1772546331',
+    desc:'Blue fire on washed black. For the ones who burn quiet.',
+    link:'https://anarcx.in/products/cold-flame-oversized-t-shirt?variant=48205250592920'
+  },
+  {
+    id:'FILE-003', name:'Tokyo Drift', color:'Olive Green', price:999,
+    imgBack:'https://cdn.shopify.com/s/files/1/0732/4359/0808/files/porcheback.png?v=1772649052',
+    imgFront:'https://cdn.shopify.com/s/files/1/0732/4359/0808/files/porchefrnt.png?v=1772649052',
+    desc:'Night run through Shibuya. JDM graphic on olive cotton.',
+    link:'https://anarcx.in/products/tokyo-drift-oversized-tshirt?variant=48205248233624'
+  },
+  {
+    id:'FILE-004', name:'After Hours', color:'Washed Black', price:999,
+    imgBack:'https://cdn.shopify.com/s/files/1/0732/4359/0808/files/weekendback.png?v=1772648945',
+    imgFront:'https://cdn.shopify.com/s/files/1/0732/4359/0808/files/weekendfront.png?v=1772648946',
+    desc:'Weekend till dawn. Skeleton graphic on washed black.',
+    link:'https://anarcx.in/products/after-hours-oversized-tshirt?variant=48205249151128'
+  },
+  {
+    id:'FILE-005', name:'Angelic Disaster', color:'Washed Black', price:999,
+    imgBack:'angelic-back.png',
+    imgFront:'angelic-front.png',
+    desc:'Angelic disaster. Silver tribal on washed black.',
+    link:'#'
+  },
+  {
+    id:'FILE-006', name:'Red String', color:'Black', price:999,
+    imgBack:'https://cdn.shopify.com/s/files/1/0732/4359/0808/files/webtie.png?v=1772649168',
+    imgFront:'https://cdn.shopify.com/s/files/1/0732/4359/0808/files/web.png?v=1772649168',
+    desc:'Tied by fate. Web graphic on black cotton.',
+    link:'https://anarcx.in/products/red-string-oversized-tshirt?variant=48205247742104'
+  },
+  {
+    id:'FILE-007', name:'Year of the Beast', color:'Black', price:1199,
+    imgBack:'https://cdn.shopify.com/s/files/1/0732/4359/0808/files/DRAGONMOCK.png?v=1775247117',
+    imgFront:'https://cdn.shopify.com/s/files/1/0732/4359/0808/files/Untitled-1.png?v=1775247117',
+    desc:'Dragon mythos. Premium heavyweight 240 GSM.',
+    link:'https://anarcx.in/products/year-of-the-beast-oversized-tshirt?variant=48836599316632'
+  }
+];
+
+/* ─────────────────────────────────────────────────────────
+   SHARED BACKEND — Firebase Realtime Database
+   ─────────────────────────────────────────────────────────
+   TO ENABLE LIVE SHARED VOTES (takes ~3 min):
+   1. Go to https://console.firebase.google.com → Create project
+   2. Build → Realtime Database → Create database (start in TEST mode)
+   3. Copy your database URL (looks like: https://YOURPROJECT-default-rtdb.firebaseio.com)
+   4. Paste it below as FIREBASE_URL
+   ───────────────────────────────────────────────────────── */
+var FIREBASE_URL = '';  // ← paste your Firebase DB URL here, e.g. 'https://yourapp-rtdb.firebaseio.com'
+var _syncTimer   = null;
+
+var SEED = {
+  'FILE-001':{ want:0, queued:0, views:0, down:0 },
+  'FILE-002':{ want:1, queued:2, views:1, down:0 },
+  'FILE-003':{ want:1, queued:0, views:0, down:0 },
+  'FILE-004':{ want:0, queued:0, views:0, down:0 },
+  'FILE-005':{ want:0, queued:0, views:1, down:0 },
+  'FILE-006':{ want:0, queued:0, views:2, down:0 },
+  'FILE-007':{ want:0, queued:0, views:0, down:0 }
+};
+
+// shared = live vote counts (from Firebase or localStorage fallback)
+var shared = {};
+
+function seedShared(){
+  PRODUCTS.forEach(function(p){
+    if(!shared[p.id]) shared[p.id] = Object.assign({}, SEED[p.id]);
+    if(shared[p.id].down  === undefined) shared[p.id].down  = 0;
+    if(shared[p.id].views === undefined) shared[p.id].views = 0;
+  });
+}
+
+function fetchShared(cb){
+  // Try localStorage shared cache first so page renders instantly
+  var cached = null;
+  try { cached = JSON.parse(localStorage.getItem('ax_shared') || 'null'); } catch(e){}
+  if(cached){ shared = cached; seedShared(); if(cb) cb(); }
+
+  if(!FIREBASE_URL){ seedShared(); if(cb && !cached) cb(); return; }
+
+  fetch(FIREBASE_URL + '/votes.json')
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if(data){ shared = data; seedShared(); }
+      try{ localStorage.setItem('ax_shared', JSON.stringify(shared)); }catch(e){}
+      if(cb) cb();
+    })
+    .catch(function(){ seedShared(); if(cb && !cached) cb(); });
+}
+
+function pushShared(){
+  try{ localStorage.setItem('ax_shared', JSON.stringify(shared)); }catch(e){}
+  if(!FIREBASE_URL) return;
+  clearTimeout(_syncTimer);
+  _syncTimer = setTimeout(function(){
+    fetch(FIREBASE_URL + '/votes.json', {
+      method: 'PUT',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify(shared)
+    }).catch(function(){});
+  }, 500);
+}
+
+/* ─── State ───────────────────────── */
+// local = this user's vote choices + queue status (never synced)
+var local = {};
+try { local = JSON.parse(localStorage.getItem('ax_lab_local') || '{}'); } catch(e){}
+PRODUCTS.forEach(function(p){
+  if(!local[p.id]) local[p.id] = { vote:null, wanted:false, _seen:false };
+  if(local[p.id].vote   === undefined) local[p.id].vote   = null;
+  if(local[p.id].wanted === undefined) local[p.id].wanted = false;
+  if(local[p.id]._seen  === undefined) local[p.id]._seen  = false;
+});
+
+// state = merged view (shared counts + local flags) used by all render fns
+var state = {};
+function rebuildState(){
+  PRODUCTS.forEach(function(p){
+    var sh = shared[p.id] || {};
+    var lc = local[p.id]  || {};
+    state[p.id] = {
+      want:   sh.want   || 0,
+      queued: sh.queued || 0,
+      views:  sh.views  || 0,
+      down:   sh.down   || 0,
+      vote:   lc.vote,
+      wanted: lc.wanted,
+      _seen:  lc._seen
+    };
+  });
+}
+
+function save(){
+  try{ localStorage.setItem('ax_lab_local', JSON.stringify(local)); }catch(e){}
+  pushShared();
+}
+
+/* ─── Heat ────────────────────────── */
+function heat(id){
+  var s = state[id];
+  var raw = s.want * 15 + s.queued * 5 + s.views * 0.5 - (s.down||0) * 8;
+  return Math.round(Math.max(0, raw) * 10) / 10;
+}
+
+function sorted(){
+  return PRODUCTS.slice().sort(function(a,b){ return heat(b.id) - heat(a.id); });
+}
+
+/* ─── Render helpers ──────────────── */
+function heatPill(id){
+  return '<div class="heat-pill" style="position:static"><span class="heat-dot">•</span>' + heat(id).toFixed(1) + '°</div>';
+}
+
+function counts(id){
+  var s = state[id];
+  return '<div class="card-counts">' +
+    '<div class="count-unit"><span class="count-n" id="w-'+id+'">'+ s.want +'</span><span class="count-l">UP</span></div>' +
+    '<span class="count-sep">/</span>' +
+    '<div class="count-unit"><span class="count-n">'+ (s.down||0) +'</span><span class="count-l">DOWN</span></div>' +
+    '<span class="count-sep">/</span>' +
+    '<div class="count-unit"><span class="count-n">'+ s.queued +'</span><span class="count-l">QUEUED</span></div>' +
+    '</div>';
+}
+
+function imgTag(p){
+  var hasBoth = p.imgFront && p.imgBack && p.imgFront !== p.imgBack;
+  return '<div class="flip-wrap" id="flip-'+p.id+'">' +
+    '<div class="flip-inner">' +
+      '<div class="flip-face">' +
+        '<img src="'+p.imgBack+'" alt="'+p.name+' back" loading="lazy">' +
+        '<div class="flip-label">BACK</div>' +
+        (hasBoth ? '<div class="flip-hint">HOVER FOR FRONT</div>' : '') +
+      '</div>' +
+      (hasBoth ?
+        '<div class="flip-face flip-back-face">' +
+          '<img src="'+p.imgFront+'" alt="'+p.name+' front" loading="lazy">' +
+          '<div class="flip-label">FRONT</div>' +
+        '</div>'
+      : '') +
+    '</div>' +
+  '</div>';
+}
+
+/* ─── Top 3 ───────────────────────── */
+function renderTop3(){
+  var top = sorted().slice(0,3);
+  document.getElementById('top3Grid').innerHTML = top.map(function(p,i){
+    return '<div class="t3-card">' +
+      '<div class="t3-img" style="cursor:pointer" onclick="openModal(\''+p.id+'\',event)">' +
+        imgTag(p) +
+        '<div class="t3-rank" style="position:absolute;top:14px;left:14px;z-index:10;font-family:\'Anton\',sans-serif;font-size:18px;color:var(--cream);background:var(--black);padding:4px 10px">#0'+(i+1)+'</div>' +
+        '<div style="position:absolute;top:14px;right:14px;z-index:10">'+ heatPill(p.id) +'</div>' +
+      '</div>' +
+      '<div class="card-info">' +
+        '<div class="card-meta"><span>'+p.id+'</span><span>'+p.color+'</span></div>' +
+        '<div class="card-name">'+p.name+'</div>' +
+        '<div class="card-desc">'+p.desc+'</div>' +
+        counts(p.id) +
+        voteRow(p.id) +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+/* ─── Vote row HTML ───────────────── */
+function voteRow(id){
+  var s = state[id];
+  var upAc   = s.vote === 'up'   ? ' active' : '';
+  var downAc = s.vote === 'down' ? ' active' : '';
+  var qAc    = s.wanted ? ' active' : '';
+  var qLbl   = s.wanted ? '✓ QUEUED' : '+ QUEUE';
+  return '<div class="vote-row">' +
+    '<button class="vote-btn up'+upAc+'" onclick="doVote(\''+id+'\',\'up\',event)">' +
+      '<span class="v-icon">▲</span>' +
+      '<span class="v-count" id="vc-up-'+id+'">'+ s.want +'</span>' +
+    '</button>' +
+    '<button class="vote-btn down'+downAc+'" onclick="doVote(\''+id+'\',\'down\',event)">' +
+      '<span class="v-icon">▼</span>' +
+      '<span class="v-count" id="vc-dn-'+id+'">'+ (s.down||0) +'</span>' +
+    '</button>' +
+    '<button class="want-btn'+qAc+'" onclick="quickWant(\''+id+'\',event)">'+qLbl+'</button>' +
+  '</div>';
+}
+
+/* ─── All Drops ───────────────────── */
+function renderDrops(){
+  document.getElementById('dropsGrid').innerHTML = PRODUCTS.map(function(p){
+    return '<div class="drop-card">' +
+      '<div class="drop-img" onclick="openModal(\''+p.id+'\',event)">' +
+        imgTag(p) +
+        '<div style="position:absolute;top:10px;right:10px;z-index:10">'+ heatPill(p.id) +'</div>' +
+      '</div>' +
+      '<div class="card-info">' +
+        '<div class="card-meta"><span>'+p.id+'</span><span>'+p.color+'</span></div>' +
+        '<div class="card-name">'+p.name+'</div>' +
+        '<div class="card-desc">'+p.desc+'</div>' +
+        counts(p.id) +
+        voteRow(p.id) +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+/* ─── Stats bar ───────────────────── */
+function updateStats(){
+  var tw=0, tq=0, tv=0;
+  PRODUCTS.forEach(function(p){ var s=state[p.id]; tw+=s.want; tq+=s.queued; tv+=s.views; });
+  document.getElementById('sHeat').textContent    = tw;
+  document.getElementById('sWaiting').textContent = tq;
+  document.getElementById('sViews').textContent   = tv;
+}
+
+function renderAll(){ renderTop3(); renderDrops(); updateStats(); }
+
+/* ─── Vote (up / down) ────────────── */
+function doVote(id, dir, e){
+  if(e) e.stopPropagation();
+  var sh = shared[id];
+  var lc = local[id];
+  var prev = lc.vote;
+
+  if(dir === 'up'){
+    if(prev === 'up'){
+      sh.want = Math.max(0, sh.want - 1);
+      lc.vote = null;
+      toast('Vote removed');
+    } else {
+      if(prev === 'down') sh.down = Math.max(0, sh.down - 1);
+      sh.want++;
+      lc.vote = 'up';
+      toast('▲ Upvoted — ' + PRODUCTS.filter(function(p){ return p.id===id; })[0].name);
+    }
+  } else {
+    if(prev === 'down'){
+      sh.down = Math.max(0, sh.down - 1);
+      lc.vote = null;
+      toast('Vote removed');
+    } else {
+      if(prev === 'up'){
+        sh.want = Math.max(0, sh.want - 1);
+        if(lc.wanted){ sh.queued = Math.max(0, sh.queued-1); lc.wanted = false; }
+      }
+      sh.down++;
+      lc.vote = 'down';
+      toast('▼ Noted — not for you');
+    }
+  }
+  save(); rebuildState(); renderAll();
+}
+
+/* ─── Quick want (no email) ──────── */
+function quickWant(id, e){
+  if(e) e.stopPropagation();
+  var lc = local[id];
+  if(lc.wanted){
+    shared[id].queued = Math.max(0, shared[id].queued - 1);
+    lc.wanted = false;
+    toast('Removed from queue');
+    save(); rebuildState(); renderAll();
+  } else {
+    openModal(id, e);
+  }
+}
+
+/* ─── Modal ───────────────────────── */
+var _active = null;
+function openModal(id, e){
+  if(e) e.stopPropagation();
+  _active = id;
+  var p = PRODUCTS.filter(function(x){ return x.id===id; })[0];
+  document.getElementById('modalSub').textContent = id + ' — ' + p.name + ' · ₹' + p.price;
+  document.getElementById('mEmail').value = '';
+  document.getElementById('mSize').value  = '';
+  document.getElementById('overlay').classList.add('open');
+  // count view
+  var lc = local[id];
+  if(!lc._seen){ shared[id].views++; lc._seen=true; save(); rebuildState(); renderAll(); }
+}
+function closeModal(){ document.getElementById('overlay').classList.remove('open'); }
+function maybeClose(e){ if(e.target===document.getElementById('overlay')) closeModal(); }
+
+function submitWant(){
+  var em = document.getElementById('mEmail').value.trim();
+  var sz = document.getElementById('mSize').value.trim();
+  if(!em || !em.includes('@')){ toast('Enter a valid email first'); return; }
+  if(_active){
+    var lc = local[_active];
+    var sh = shared[_active];
+    if(!lc.wanted){
+      // only upvote if they haven't already upvoted
+      if(lc.vote !== 'up'){ sh.want++; lc.vote = 'up'; }
+      sh.queued++;
+      lc.wanted = true;
+    }
+    var queue = [];
+    try { queue = JSON.parse(localStorage.getItem('ax_lab_queue') || '[]'); } catch(e){}
+    var p = PRODUCTS.filter(function(x){ return x.id===_active; })[0];
+    queue.push({
+      email: em, size: sz || '—', productId: _active,
+      productName: p ? p.name : _active,
+      ts: new Date().toISOString()
+    });
+    try { localStorage.setItem('ax_lab_queue', JSON.stringify(queue)); } catch(e){}
+    save(); rebuildState(); renderAll();
+  }
+  closeModal();
+  toast("You\'re queued. We\'ll hit you first 🔥");
+}
+
+/* ─── Toast ───────────────────────── */
+var _tTimer;
+function toast(msg){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(_tTimer);
+  _tTimer = setTimeout(function(){ t.classList.remove('show'); }, 2800);
+}
+
+/* ─── Keyboard ────────────────────── */
+document.addEventListener('keydown', function(e){
+  if(e.key==='Escape'){
+    closeModal();
+    if(document.getElementById('adminScreen').classList.contains('open')) closeAdmin();
+  }
+});
+
+/* ─── Admin ───────────────────────── */
+var ADMIN_PW = 'ANARCX2026';
+var _adminUnlocked = false;
+
+function openAdmin(e){
+  if(e) e.preventDefault();
+  document.getElementById('adminScreen').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  if(!_adminUnlocked){
+    document.getElementById('adminLock').style.display = 'flex';
+    document.getElementById('adminDash').classList.remove('open');
+    setTimeout(function(){ document.getElementById('adminPwInput').focus(); }, 80);
+  } else {
+    showDash();
+  }
+}
+
+function closeAdmin(){
+  document.getElementById('adminScreen').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function adminLogin(){
+  var val = document.getElementById('adminPwInput').value;
+  var err = document.getElementById('adminPwErr');
+  if(val === ADMIN_PW){
+    _adminUnlocked = true;
+    err.textContent = '';
+    document.getElementById('adminPwInput').value = '';
+    showDash();
+  } else {
+    err.textContent = '// INCORRECT PASSWORD';
+    document.getElementById('adminPwInput').value = '';
+    document.getElementById('adminPwInput').focus();
+  }
+}
+
+function showDash(){
+  document.getElementById('adminLock').style.display = 'none';
+  document.getElementById('adminDash').classList.add('open');
+  renderAdminDash();
+}
+
+function renderAdminDash(){
+  // KPIs
+  var tw=0, tq=0, tv=0;
+  PRODUCTS.forEach(function(p){ var s=state[p.id]; tw+=s.want; tq+=s.queued; tv+=s.views; });
+  document.getElementById('akWant').textContent  = tw;
+  document.getElementById('akQueue').textContent = tq;
+  document.getElementById('akViews').textContent = tv;
+
+  // timestamp
+  document.getElementById('adminTimeLabel').textContent =
+    'LAST UPDATED: ' + new Date().toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit'});
+
+  // heat table
+  var ranked = sorted();
+  document.getElementById('adminHeatBody').innerHTML = ranked.map(function(p, i){
+    var s = state[p.id];
+    var h = heat(p.id);
+    var badge = h >= 20 ? '<span class="admin-badge hot">HOT</span>'
+              : h >= 5  ? '<span class="admin-badge warm">WARM</span>'
+              :            '<span class="admin-badge cold">COLD</span>';
+    return '<tr>' +
+      '<td class="td-rank">#0'+(i+1)+'</td>' +
+      '<td style="color:rgba(255,255,255,.3)">'+ p.id +'</td>' +
+      '<td class="td-name">'+ p.name +'</td>' +
+      '<td>'+ s.want +'</td>' +
+      '<td>'+ s.queued +'</td>' +
+      '<td>'+ s.views +'</td>' +
+      '<td class="td-heat">'+ h.toFixed(1) +'°</td>' +
+      '<td>'+ badge +'</td>' +
+    '</tr>';
+  }).join('');
+
+  // queue table
+  var queue = [];
+  try { queue = JSON.parse(localStorage.getItem('ax_lab_queue') || '[]'); } catch(e){}
+
+  if(queue.length === 0){
+    document.getElementById('adminQueueTable').style.display = 'none';
+    document.getElementById('adminEmpty').style.display = 'block';
+  } else {
+    document.getElementById('adminQueueTable').style.display = 'table';
+    document.getElementById('adminEmpty').style.display = 'none';
+    // sort newest first
+    var sorted_q = queue.slice().reverse();
+    document.getElementById('adminQueueBody').innerHTML = sorted_q.map(function(entry){
+      var h_val = '—';
+      var pid = entry.productId;
+      if(pid && state[pid]) h_val = heat(pid).toFixed(1) + '°';
+      var d = new Date(entry.ts);
+      var dt = d.toLocaleDateString('en-IN',{day:'2-digit',month:'short'}) + ' '
+             + d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+      return '<tr>' +
+        '<td style="color:rgba(255,255,255,.3);white-space:nowrap">'+ dt +'</td>' +
+        '<td style="color:var(--cream)">'+ entry.email +'</td>' +
+        '<td>'+ entry.size +'</td>' +
+        '<td>'+ entry.productName +'</td>' +
+        '<td class="td-heat">'+ h_val +'</td>' +
+      '</tr>';
+    }).join('');
+  }
+}
+
+function exportCSV(){
+  var queue = [];
+  try { queue = JSON.parse(localStorage.getItem('ax_lab_queue') || '[]'); } catch(e){}
+  if(queue.length === 0){ toast('No signups to export yet'); return; }
+  var rows = [['Timestamp','Email','Size','Product','Heat']];
+  queue.forEach(function(e){
+    var h_val = (e.productId && state[e.productId]) ? heat(e.productId).toFixed(1) : '0';
+    rows.push([e.ts, e.email, e.size, e.productName, h_val]);
+  });
+  var csv = rows.map(function(r){ return r.map(function(c){ return '"'+String(c).replace(/"/g,'""')+'"'; }).join(','); }).join('\n');
+  var blob = new Blob([csv], {type:'text/csv'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'anarcx-lab-waitlist-' + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('Waitlist exported!');
+}
+
+/* ─── Boot ────────────────────────── */
+seedShared();
+rebuildState();
+renderAll();
+// fetch live counts in background
+fetchShared(function(){
+  rebuildState();
+  renderAll();
+});
+</script>
+</body>
+</html>
